@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelOps Patient | Customer Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-brand">
+        <span class="brand-icon">🏥</span>
+        <div>
+          <h1 class="brand-title">SentinelOps Patient</h1>
+          <p class="brand-subtitle">Customer Management Dashboard (Target Application)</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <div id="healthBadge" class="status-badge healthy">
+          <span class="status-dot"></span>
+          <span id="healthText">System: Checking...</span>
+        </div>
+        <button id="refreshBtn" class="btn btn-sm">↻ Refresh</button>
+      </div>
+    </header>
+
+    <!-- Metrics Row -->
+    <section class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">API Service</div>
+        <div class="metric-value">sentinelops-patient</div>
+        <div class="metric-sub">FastAPI / Python 3.11</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Registered Customers</div>
+        <div id="customerCount" class="metric-value">3</div>
+        <div class="metric-sub">In-Memory Data Store</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">API Latency</div>
+        <div id="latencyVal" class="metric-value">-- ms</div>
+        <div class="metric-sub">Live HTTP /api/health probe</div>
+      </div>
+    </section>
+
+    <!-- Main Content Layout -->
+    <div class="main-grid">
+      <!-- Left: Customer List -->
+      <section class="card">
+        <div class="card-header">
+          <h2>Customer Directory</h2>
+          <span class="badge-pill">GET /api/users</span>
+        </div>
+        <div id="customerList" class="customer-list">
+          <div class="loading-placeholder">Loading customer records...</div>
+        </div>
+      </section>
+
+      <!-- Right: Customer Lookup & Bug Simulation -->
+      <section class="card">
+        <div class="card-header">
+          <h2>Customer Lookup</h2>
+          <span class="badge-pill">GET /api/user/{id}</span>
+        </div>
+        <p class="card-desc">Look up an individual customer profile by ID, or test fault tolerance.</p>
+
+        <form id="lookupForm" class="lookup-form">
+          <div class="form-group">
+            <label for="userIdInput">Customer ID</label>
+            <div class="input-row">
+              <input type="number" id="userIdInput" class="input-field" placeholder="e.g. 1, 2, or 3" value="1" min="1" required>
+              <button type="submit" class="btn btn-primary">Lookup User</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="bug-box">
+          <div class="bug-box-header">
+            <span>⚡ Fault Injection Simulation</span>
+            <span class="bug-tag">IndexError</span>
+          </div>
+          <p class="bug-desc">Requesting non-existent Customer <strong>ID 999</strong> triggers an intentional bounds-check defect (<code># SENTINELOPS_TEST_BUG</code>). Server logs the exception to <code>logs/app.log</code> while remaining online.</p>
+          <button id="triggerBugBtn" class="btn btn-danger">Simulate Fault (GET /api/user/999)</button>
+        </div>
+
+        <!-- Result Console -->
+        <div class="result-section">
+          <div class="result-header">
+            <span>Response Payload</span>
+            <span id="responseStatus" class="response-status">Idle</span>
+          </div>
+          <pre id="resultJson" class="json-display">{"message": "Enter customer ID or click Lookup User to inspect response"}</pre>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>SentinelOps Patient Application • Completely Independent Architecture</div>
+      <div class="footer-links">
+        <a href="/api/health" target="_blank">Health Endpoint</a>
+        <a href="/api/users" target="_blank">Users API</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
