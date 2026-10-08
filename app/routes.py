@@ -55,4 +55,7 @@ def get_user_by_id(user_id: int):
     matching = [u for u in USERS if u["id"] == user_id]
 
     # SENTINELOPS_TEST_BUG
+    if not matching:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="User not found")
     return matching[0]
